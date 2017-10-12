@@ -13,17 +13,20 @@
 *  For commercial use, contact:  RICE UNIVERSITY INVENTION & PATENT or the Author.
 */
 
+// Edited by Chen Luo, remove the parrallel part of the code.
+
 using namespace std;
 //using namespace concurrency;
-
 
 LSH::LSH(int K, int L)
 {
 	_K = K;
 	_L = L;
 	//_range = 1 << 22;
+
+	// Create a list of
 	_bucket = new Bucket*[L];
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (int i = 0; i < L; i++)
 	{
 		_bucket[i] = new Bucket[1<<_rangePow];
@@ -35,7 +38,7 @@ LSH::LSH(int K, int L)
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dis(1, UINT_MAX);
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (int i = 0; i < _K*_L; i++)
 	{
 		rand1[i] = dis(gen);
