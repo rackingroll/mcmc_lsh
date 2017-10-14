@@ -6,7 +6,8 @@
 //#include <ppl.h>
 #include <random>
 #include <algorithm>
-#pragma once
+#include <climits>
+//#pragma once
 /* Author: Anshumali Shrivastava
 *  COPYRIGHT PROTECTION
 *  Free for research use. 
@@ -17,6 +18,9 @@
 
 using namespace std;
 //using namespace concurrency;
+
+int LSH::_rangePow = 20;
+int LSH::_thresh = 0;
 
 LSH::LSH(int K, int L)
 {
@@ -29,13 +33,16 @@ LSH::LSH(int K, int L)
 //#pragma omp parallel for
 	for (int i = 0; i < L; i++)
 	{
+//		_bucket[i] = new Bucket[1<<_K];
 		_bucket[i] = new Bucket[1<<_rangePow];
 	}
 
 	rand1 = new int[_K*_L];
 
 	std::random_device rd;
+	print 
 	std::mt19937 gen(rd());
+
 	std::uniform_int_distribution<> dis(1, UINT_MAX);
 
 //#pragma omp parallel for
@@ -118,7 +125,7 @@ int * LSH::retrieve(int *hashes)
 }
 
 /*
-returns an array with  ret with 3 values
+returns an array with ret with 3 values
 ret[0] is the sample returned 
 Sampling Probability = (1 - (1 - p^K)^ret[2])*(1/returnarray[1])
 where p = (1 - 1/(Range))LSHCollprob(q,ret[0]) + 1/(Range)

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
-#pragma once
+//#pragma once
 using namespace std;
 
 SignedRandomProjection::SignedRandomProjection(int dimention,int numOfHashes)

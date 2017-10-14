@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Bucket.h"
-#pragma once
+//#pragma once
+
+int Bucket::_size = 0;
 
 Bucket::Bucket()
 {
