@@ -2,7 +2,7 @@
 #include "Bucket.h"
 //#pragma once
 
-int Bucket::_size = 0;
+int Bucket::_size = 256;
 
 Bucket::Bucket()
 {

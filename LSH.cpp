@@ -20,31 +20,36 @@ using namespace std;
 //using namespace concurrency;
 
 int LSH::_rangePow = 20;
-int LSH::_thresh = 0;
+int LSH::_thresh = 1;
 
 LSH::LSH(int K, int L)
 {
 	_K = K;
 	_L = L;
 	//_range = 1 << 22;
+	_rangePow = K;
 
 	// Create a list of
 	_bucket = new Bucket*[L];
 //#pragma omp parallel for
+
+	// Create L tables for Hashing
 	for (int i = 0; i < L; i++)
 	{
+		// Each _bucket is a 
 //		_bucket[i] = new Bucket[1<<_K];
 		_bucket[i] = new Bucket[1<<_rangePow];
 	}
 
+	// _K* _L number of bits
 	rand1 = new int[_K*_L];
 
 	std::random_device rd;
-	print 
 	std::mt19937 gen(rd());
 
-	std::uniform_int_distribution<> dis(1, UINT_MAX);
-
+//	std::uniform_int_distribution<> dis(1, UINT_MAX);
+	std::uniform_int_distribution<> dis(1, INT_MAX);
+	
 //#pragma omp parallel for
 	for (int i = 0; i < _K*_L; i++)
 	{
@@ -142,9 +147,9 @@ int * LSH::sample(int *hashes)
 	std::vector<int> v;
 	for (int i = 0; i < _L; i++)
 	{
-		v[i] = i;
+		v.push_back(i);
+		//v[i] = i;
 	}
-
 
 	std::random_device rd;
 	std::mt19937 g(rd());

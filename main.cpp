@@ -22,19 +22,21 @@ int main (int argc, char *argv[])
     
     double data[4][3] =
     {
-        {1,2,3}, {0,2,4}, {9,10,11}, {11,12,16}
+        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {9.0,10.0,11.0}, {11.0,12.0,16.0}
     };
-    printf("Here!1\n");
-    LSH* lsh = new LSH(4,1);
-    printf("Here!2\n");
 
-    SignedRandomProjection* srp = new SignedRandomProjection(3,4) ;
+    LSH* lsh = new LSH(10,10);
 
-        for (int i=0;i<4;i++)
+    SignedRandomProjection* srp = new SignedRandomProjection(3,10) ;
+
+    for (int i=0;i<4;i++)
     {
         lsh->add(srp->getHash(data[i], 3), i);
-
     }
+
+    int* sample = lsh->sample(srp->getHash(data[0], 3)) ;
+
+    printf("%d, %d, %d\n", sample[0], sample[1], sample[2]);
 
     cout << "Hello World!" << "\n" ;
 }
