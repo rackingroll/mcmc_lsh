@@ -27,7 +27,7 @@ LSH::LSH(int K, int L)
 	_K = K;
 	_L = L;
 	//_range = 1 << 22;
-	_rangePow = K;
+	LSH::_rangePow = K;
 
 	// Create a list of
 	_bucket = new Bucket*[L];
