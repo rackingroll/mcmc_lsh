@@ -58,6 +58,7 @@ int * Bucket::sample()
 		//no sample found
 		sample[0] = -1; 
 		sample[1] = -1; 
+		return sample; // confuse here.
 	}
 
 	int randint = rand() % index;

@@ -171,14 +171,15 @@ int * LSH::sample(int *hashes)
 		index = (index << 2) >> (32 - LSH::_rangePow);
 		if (_bucket[table][index].getAll() == NULL)
 		{
+			// Nothing returned
 			continue;
 		}
 		else{
 			int * retSamp = _bucket[table][index].sample();
 
-			samplewithProb[0] = retSamp[0];
-			samplewithProb[1] = retSamp[1];
-			samplewithProb[2] = i;
+			samplewithProb[0] = retSamp[0]; // The sample
+			samplewithProb[1] = retSamp[1]; // The uniform distribution of the sample
+			samplewithProb[2] = i; // In which table it is.
 			return samplewithProb;
 		}
 		

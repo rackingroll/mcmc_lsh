@@ -12,6 +12,7 @@ private:
 public:
 	SignedRandomProjection(int dimention, int numOfHashes);
 	int * getHash(double * vector, int length);
+	double getProb(double * q, double * vector, int length);
 	~SignedRandomProjection();
 };
 

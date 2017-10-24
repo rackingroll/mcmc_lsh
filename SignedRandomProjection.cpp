@@ -3,6 +3,9 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
+#include <math.h>
+
+#define PI 3.14159265
 //#pragma once
 using namespace std;
 
@@ -42,6 +45,34 @@ SignedRandomProjection::SignedRandomProjection(int dimention,int numOfHashes)
 		}
 	}
 }
+
+/*
+* Calculate the collision probability under sign random projection
+*/
+
+double SignedRandomProjection::getProb(double * q, double * vector, int length)
+{
+	double inner = 0.0;
+	double q_norm = 0.0;
+	double v_norm = 0.0;
+
+	for (int i=0;i<length;i++)
+	{
+		inner += q[i]*vector[i];
+		v_norm += vector[i]*vector[i];
+		q_norm += q[i]*q[i];
+	}
+	
+	q_norm = sqrt(q_norm) ;
+	v_norm = sqrt(v_norm) ;
+	
+	double param = inner / (q_norm*v_norm) ;
+
+	//cout << "para!!!!!" << acos(param) << endl;
+	return 1 - (acos(param) / PI );
+	
+}
+
 
 int * SignedRandomProjection::getHash(double * vector, int length)
 {
