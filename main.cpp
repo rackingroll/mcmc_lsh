@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <math.h>
 #include "SignedRandomProjection.h"
+#include "L2LSH.h"
 //#pragma once
 /* Author: Chen Luo
 *  COPYRIGHT PROTECTION
@@ -21,7 +22,14 @@ int main (int argc, char *argv[])
 {
     // Generate a sample data here to do experiment.
     // With 0,1 one cluster, 3,4 one cluster
-    
+
+    /*
+    Code for test
+    */
+    L2LSH * l2lsh = new L2LSH(2,2) ;
+
+    return 0;
+
     double data[8][3] =
     {
         {1.0,2.0,3.0}, {0.0,2.0,4.0}, {9.0,10.0,11.0}, {11.0,12.0,16.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {9.0,10.0,11.0}, {11.0,12.0,16.0}
