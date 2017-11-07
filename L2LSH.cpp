@@ -21,10 +21,24 @@ L2LSH::L2LSH(int dimention,int numOfHashes)
     // standard deviation affects the dispersion of generated values from the mean
     std::normal_distribution<> d(0,1);
     
-    double a = d(gen) ;
+    _rand_vec = new double*[_numhashes];
 
-    printf("%f\n", a);
-
+    for (size_t i = 0; i < _numhashes; i++ )
+    {
+        _rand_vec[i] = new double[_dim];
+        double sum = 0.0;
+        for (size_t j = 0; j < _dim; j++)
+        {
+            _rand_vec[i][j] = d(gen);
+            sum += _rand_vec[i][j];
+        }
+        // Normalize
+        for (size_t j = 0; j < _dim; j++)
+        {
+            _rand_vec[i][j] /= sum;
+        }
+    }
+   
 }
 
 /*
@@ -39,6 +53,7 @@ double L2LSH::getProb(double * q, double * vector, int length)
 
 int * L2LSH::getHash(double * vector, int length)
 {
+    
     return NULL;
 }
 
