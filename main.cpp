@@ -26,9 +26,7 @@ int main (int argc, char *argv[])
     /*
     Code for test
     */
-    L2LSH * l2lsh = new L2LSH(2,2) ;
-
-    return 0;
+    
 
     double data[8][3] =
     {
@@ -36,9 +34,19 @@ int main (int argc, char *argv[])
     };
 
     int K = 10;
-    int L = 10;
+    int L = 1;
+    int dim = 3;
 
     LSH* lsh = new LSH(K,L);
+
+    L2LSH * l2lsh = new L2LSH[L] ;
+
+    for (int i=0; i< L; i++)
+    {
+        l2lsh[i].Initialize(dim, K);
+    }
+
+    return 0;
 
     SignedRandomProjection* srp = new SignedRandomProjection(3,K) ;
 

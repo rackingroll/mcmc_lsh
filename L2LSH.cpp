@@ -9,6 +9,41 @@
 //#pragma once
 using namespace std;
 
+L2LSH::L2LSH()
+{
+}
+
+void L2LSH::Initialize(int dimention,int numOfHashes)
+{
+	_dim = dimention;
+	_numhashes = numOfHashes;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+ 
+    // values near the mean are the most likely
+    // standard deviation affects the dispersion of generated values from the mean
+    std::normal_distribution<> d(0,1);
+    
+    _rand_vec = new double*[_numhashes];
+
+    for (size_t i = 0; i < _numhashes; i++ )
+    {
+        _rand_vec[i] = new double[_dim];
+        double sum = 0.0;
+        for (size_t j = 0; j < _dim; j++)
+        {
+            _rand_vec[i][j] = d(gen);
+            sum += _rand_vec[i][j];
+        }
+        // Normalize
+        for (size_t j = 0; j < _dim; j++)
+        {
+            _rand_vec[i][j] /= sum;
+        }
+    }    
+}
+
 L2LSH::L2LSH(int dimention,int numOfHashes)
 {
 	_dim = dimention;
@@ -53,8 +88,20 @@ double L2LSH::getProb(double * q, double * vector, int length)
 
 int * L2LSH::getHash(double * vector, int length)
 {
-    
-    return NULL;
+    int * hashes = new int[_numhashes];
+    for (size_t i = 0; i < _numhashes; i++)
+    {
+        double inner_product = 0.0;
+        hashes[i] = 0;
+        double _b = (double)rand()/_w;
+        for (size_t j=0;j<length;j++)
+        {
+            inner_product += vector[j]* _rand_vec[i][j];
+        }
+
+        hashes[i] = floor((inner_product+_b) / _w);    
+    }
+    return hashes;
 }
 
 L2LSH::~L2LSH()
