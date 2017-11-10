@@ -40,6 +40,7 @@ void L2LSH::Initialize(int dimention,int numOfHashes)
         for (size_t j = 0; j < _dim; j++)
         {
             _rand_vec[i][j] /= sum;
+            //printf("%f \n", _rand_vec[i][j]);
         }
     }    
 }
@@ -93,14 +94,19 @@ int * L2LSH::getHash(double * vector, int length)
     {
         double inner_product = 0.0;
         hashes[i] = 0;
-        double _b = (double)rand()/_w;
+        double _b = (double) (rand() % int(_w));
+        
         for (size_t j=0;j<length;j++)
         {
             inner_product += vector[j]* _rand_vec[i][j];
         }
 
+        //printf("%f ", inner_product);
+
         hashes[i] = floor((inner_product+_b) / _w);    
+        //printf ("%d ", hashes[i]);
     }
+    //printf ("\n");
     return hashes;
 }
 

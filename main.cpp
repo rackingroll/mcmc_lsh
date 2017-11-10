@@ -30,31 +30,36 @@ int main (int argc, char *argv[])
 
     double data[8][3] =
     {
-        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {9.0,10.0,11.0}, {11.0,12.0,16.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {9.0,10.0,11.0}, {11.0,12.0,16.0}
+        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {100.0,101.0,113.0}, {100.0,100.0,113.0}, {100.0,101.0,112.0}, {99.0,101.0,113.0}
     };
 
     int K = 10;
-    int L = 1;
+    int L = 10;
     int dim = 3;
+    int N = 8; // Datasize
 
     LSH* lsh = new LSH(K,L);
 
-    L2LSH * l2lsh = new L2LSH[L] ;
+    L2LSH * l2lsh = new L2LSH(dim, K*L) ;
 
-    for (int i=0; i< L; i++)
+    for (int j=0; j<N; j++ )
     {
-        l2lsh[i].Initialize(dim, K);
+        lsh->add(l2lsh->getHash(data[j], dim), j);
+    }
+
+    for (int i=0; i<N; i++ )
+    {
+        cout << "Data Number: " << i << endl;
+
+        // What happened with the hashing here!
+        int * candidates = lsh->retrieve(l2lsh->getHash(data[i], dim));
+        cout << candidates[0];
+        cout << endl;
     }
 
     return 0;
-
-    SignedRandomProjection* srp = new SignedRandomProjection(3,K) ;
-
-    for (int i=0;i<4;i++)
-    {
-        lsh->add(srp->getHash(data[i], 3), i);
-    }
-
+    
+    /*
     int* sample = lsh->sample(srp->getHash(data[2], 3)) ;
 
     printf("%d, %d, %d\n", sample[0], sample[1], sample[2]);
@@ -70,4 +75,5 @@ int main (int argc, char *argv[])
     double p = (1.0 - pow((1.0 - pow(cp,K)),sample[2]+1))*(1.0/sample[1]);
 
     cout << "Hello World!, p=" <<p<< "\n" ;
+    */
 }

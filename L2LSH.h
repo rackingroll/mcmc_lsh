@@ -8,7 +8,7 @@ private:
 	int _dim;
 	int _numhashes, _samSize;
     double ** _rand_vec;
-	double _w = 5.0;  // The size of the bins on the normalized vector
+	double _w = 20.0;  // The size of the bins on the normalized vector
 	
 public:
 	L2LSH();
