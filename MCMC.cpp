@@ -1,11 +1,10 @@
 #include <iostream>
 #include "MCMC.h"
 
-int MCMC::_size = 0;
-
 MCMC::MCMC()
 {
-	a = 1;
+	_data = NULL;
+	_label = NULL;
 }
 
 MCMC::~MCMC()

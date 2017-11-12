@@ -20,7 +20,7 @@ using namespace std;
 //using namespace concurrency;
 
 int LSH::_rangePow = 20;
-int LSH::_thresh = 1;
+int LSH::_thresh = 1; // The number of appeared times in the bucket
 
 LSH::LSH(int K, int L)
 {
@@ -77,15 +77,21 @@ void LSH::add(int *hashes, int id)
 	}
 }
 
+// return uniqeRet
+// uniqeRet[0] is the size of returned list
+// uniqeRet[1] is id, I don't know what the hell is that!
+
 int * LSH::retrieve(int *hashes)
 { 
 
+	// The element in the list (index) is the data point id, the value is the number its appeared.
 	std::unordered_map<int, int> m;
 
 	int count = 0;
 
 	for (int i = 0; i < _L; i++)
 	{
+		// Get the index of the current hash like above.
 		unsigned int index = 0;
 		for (int j = 0; j < _K; j++)
 		{
@@ -96,16 +102,21 @@ int * LSH::retrieve(int *hashes)
 			index += h*hashes[_K*i + j];
 		}
 		index = (index << 2) >> (32 - LSH::_rangePow);
+
+		// Nothing in the bucket, go to next table
 		if (_bucket[i][index].getAll() == NULL)
 		{
 			continue;
 		}
+
+		// Iterate all the element in the corresponding bucket
 		for (size_t a = 0; a < _bucket[i][index].getSize(); a++)
 		{
 			if (_bucket[i][index].getAll()[a] == 0)
 				continue;
 			if (_bucket[i][index].getAll()[a] < 0)
 				continue;
+			// See if already has the datapoint _bucket[i][index].getAll()[a] in m, accumulate all the stuff here
 			if (m.find(_bucket[i][index].getAll()[a]) == m.end())
 				m[_bucket[i][index].getAll()[a]] = 1;
 			else

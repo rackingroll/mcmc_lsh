@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 
     double data[8][3] =
     {
-        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {100.0,101.0,113.0}, {100.0,100.0,113.0}, {100.0,101.0,112.0}, {99.0,101.0,113.0}
+        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {100.0,101.0,113.0}, {100.0,100.0,113.0}, {100.0,101.0,112.0}, {99.0,101.0,112.0}
     };
 
     int K = 10;
@@ -53,7 +53,10 @@ int main (int argc, char *argv[])
 
         // What happened with the hashing here!
         int * candidates = lsh->retrieve(l2lsh->getHash(data[i], dim));
-        cout << candidates[0];
+        for (int j=0; j< candidates[0]; j++)
+        {
+            cout <<candidates[j+2] << "  "; // the top 2 value is nothing!
+        }
         cout << endl;
     }
 
