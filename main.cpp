@@ -7,6 +7,7 @@
 #include <math.h>
 #include "SignedRandomProjection.h"
 #include "L2LSH.h"
+#include "MCMC.h"
 //#pragma once
 /* Author: Chen Luo
 *  COPYRIGHT PROTECTION
@@ -23,20 +24,36 @@ int main (int argc, char *argv[])
     // Generate a sample data here to do experiment.
     // With 0,1 one cluster, 3,4 one cluster
 
-    /*
-    Code for test
-    */
-    
-
-    double data[8][3] =
-    {
-        {1.0,2.0,3.0}, {0.0,2.0,4.0}, {1.0,2.0,3.0}, {0.0,2.0,4.0}, {100.0,101.0,113.0}, {100.0,100.0,113.0}, {100.0,101.0,112.0}, {99.0,101.0,112.0}
-    };
-
     int K = 10;
     int L = 10;
     int dim = 3;
-    int N = 8; // Datasize
+    int N = 200; // Datasize
+    int clusnum = 2;
+
+    double ** data = new double*[N];
+    int * label = new int[N];
+    for (int i=0;i<N;i++)
+    {
+        data[i] = new double[dim];
+        for (int j=0;j<dim;j++)
+        {
+            if (i< N/2)
+            {
+                label[i] = 0;
+                data[i][j] = 0.0;
+            }
+            else
+            {
+                label[i] = 1;
+                data[i][j] = 1.0;
+            }
+        }
+    }
+    
+    MCMC * mcmc = new MCMC(data, label, N, dim, clusnum);
+    //mcmc->EM_GMM();
+    mcmc->SM_GMM();
+    return 0;
 
     LSH* lsh = new LSH(K,L);
 
@@ -60,8 +77,7 @@ int main (int argc, char *argv[])
         cout << endl;
     }
 
-    return 0;
-    
+   
     /*
     int* sample = lsh->sample(srp->getHash(data[2], 3)) ;
 
