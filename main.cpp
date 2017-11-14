@@ -1,12 +1,12 @@
 #include <iostream>
 #include <unordered_map>
 #include "HashFunction.h"
-#include "LSH.h"
+//#include "LSH.h"
 #include <random>
 #include <algorithm>
 #include <math.h>
 #include "SignedRandomProjection.h"
-#include "L2LSH.h"
+//#include "L2LSH.h"
 #include "MCMC.h"
 //#pragma once
 /* Author: Chen Luo
@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
     int K = 10;
     int L = 10;
     int dim = 3;
-    int N = 200; // Datasize
+    int N = 8; // Datasize
     int clusnum = 2;
 
     double ** data = new double*[N];
@@ -50,9 +50,17 @@ int main (int argc, char *argv[])
         }
     }
     
-    MCMC * mcmc = new MCMC(data, label, N, dim, clusnum);
+    MCMC * mcmc = new MCMC(data, label, N, dim, clusnum, K, L);
+
+    clock_t t;
+    t = clock();
+
     //mcmc->EM_GMM();
-    mcmc->SM_GMM();
+    //mcmc->SM_GMM();
+    mcmc->SDDSSM_GMM();
+    //mcmc->LSHSM_GMM();
+
+    printf ("It took me %f seconds.\n",((float)t)/CLOCKS_PER_SEC);
     return 0;
 
     LSH* lsh = new LSH(K,L);
@@ -76,7 +84,6 @@ int main (int argc, char *argv[])
         }
         cout << endl;
     }
-
    
     /*
     int* sample = lsh->sample(srp->getHash(data[2], 3)) ;

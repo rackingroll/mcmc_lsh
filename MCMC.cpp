@@ -2,6 +2,9 @@
 #include <cmath>
 #include <limits>
 #include "MCMC.h"
+//#include "L2LSH.h"
+//#include "LSH.h"
+//#include "HashFunction.h"
 
 using namespace std;
 
@@ -32,6 +35,35 @@ MCMC::MCMC(double ** data, int * label, int num, int dim, int clusnum)
 		{
 			_data[i][j] = data[i][j];
 		}
+	}
+}
+
+MCMC::MCMC(double ** data, int * label, int num, int dim, int clusnum, int K, int L)
+{
+	srand(time(0));
+	_num = num;
+	_dim = dim;
+	_clusnum = clusnum;
+
+	_label = new int[_num];
+	_data = new double*[_num];
+
+	for (int i=0;i< _num; i++)
+	{
+		_data[i] = new double[_dim];
+		_label[i] = label[i];
+		for (int j=0;j< _dim; j++)
+		{
+			_data[i][j] = data[i][j];
+		}
+	}
+
+	lsh = new LSH(K,L);
+	l2lsh = new L2LSH(_dim, K*L) ;
+	
+	for (int j=0; j<_num; j++ )
+	{
+		lsh->add(l2lsh->getHash(_data[j], _dim), j);
 	}
 }
 
@@ -115,20 +147,19 @@ int * MCMC::EM_GMM()
 	{
 		labelCurrent = Operation(label);
 		
-		for (int i=0;i<_num;i++) cout << label[i] ;
-		cout<< endl;
-		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		cout<< endl;
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
 
 		double likelihoodCurrent = Likelihood(labelCurrent, _clusnum);
 		if (likelihoodCurrent <= likelihood)
 		{
-			//cout << "likelihood: " << likelihood << endl;
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 		}
-		cout << "likelihood: " << likelihood << endl;
-		cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+		//cout << "likelihood: " << likelihood << endl;
+		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
 
 	}
 
@@ -149,17 +180,16 @@ int * MCMC::SM_GMM()
 	// TBD
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
-	
+	int iter = 0;
 	while (likelihood >= 0.01)
 	{
+		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationSM(label, &clusnumCurrent);
-		cout << "Clusnum: " << clusnum << endl;
-		cout << "ClusnumCurrent: " << clusnumCurrent << endl;
-		for (int i=0;i<_num;i++) cout << label[i] ;
-		cout<< endl;
-		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		cout<< endl;
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
 		if (likelihoodCurrent < likelihood)
@@ -169,10 +199,10 @@ int * MCMC::SM_GMM()
 			label = labelCurrent;
 			clusnum = clusnumCurrent;
 		}
-		cout << "likelihood: " << likelihood << endl;
-		cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+		//cout << "likelihood: " << likelihood << endl;
+		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
 	}
-	
+	cout<< iter << endl;
 	return label;	
 }
 
@@ -187,33 +217,70 @@ int * MCMC::SDDSSM_GMM()
 		label[i] = 0;
 	}
 	
-	// TBD
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
-	
+	int iter = 0;
 	while (likelihood >= 0.01)
 	{
+		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationSDDSSM(label, &clusnumCurrent);
-		cout << "Clusnum: " << clusnum << endl;
-		cout << "ClusnumCurrent: " << clusnumCurrent << endl;
-		for (int i=0;i<_num;i++) cout << label[i] ;
-		cout<< endl;
-		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		cout<< endl;
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
 		if (likelihoodCurrent < likelihood)
 		{
-			//cout << "likelihood: " << likelihood << endl;
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 			clusnum = clusnumCurrent;
 		}
-		cout << "likelihood: " << likelihood << endl;
-		cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+		//cout << "likelihood: " << likelihood << endl;
+		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
 	}
 	
+	cout<< iter <<endl;
+	return label;	
+}
+
+int * MCMC::LSHSM_GMM()
+{
+	int * label = new int[_num];
+	int clusnum = 1;
+
+	// All the 
+	for (int i = 0; i < _num; i++)
+	{
+		label[i] = 0;
+	}
+	
+	double likelihood = std::numeric_limits<double>::max();
+	int * labelCurrent;
+	int iter = 0;
+	while (likelihood >= 0.01)
+	{
+		iter++;
+		int clusnumCurrent = clusnum;
+		labelCurrent = OperationLSHSM(label, &clusnumCurrent);
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
+	
+		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
+		if (likelihoodCurrent < likelihood)
+		{
+			likelihood = likelihoodCurrent;
+			label = labelCurrent;
+			clusnum = clusnumCurrent;
+		}
+		//cout << "likelihood: " << likelihood << endl;
+		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+	}
+	
+	cout<< iter <<endl;
 	return label;	
 }
 
@@ -257,10 +324,8 @@ int * MCMC::Operation(int * label)
 	return labelCurrent;
 }
 
-// Design two operations, move or switch
 int * MCMC::OperationSM(int * label, int *clusnum)
 {
-	cout << "-----------" << *clusnum << endl;
 	int * labelCurrent = new int[_num];
 
 	for (int i=0;i<_num;i++)
@@ -280,7 +345,7 @@ int * MCMC::OperationSM(int * label, int *clusnum)
 		if (rand() % 2 == 0)
 		{
 			// Split
-			cout << "Split!" << endl;
+			//cout << "Split!" << endl;
 			int split_label = rand() % (*clusnum);
 			for (int i=0;i<_num;i++)
 			{
@@ -294,7 +359,7 @@ int * MCMC::OperationSM(int * label, int *clusnum)
 		}
 		else // Merge
 		{
-			cout << "Merge!" << endl;
+			//cout << "Merge!" << endl;
 			if (*clusnum == 1) return labelCurrent;
 			int mlabel1 = 0;
 			int mlabel2 = 0;
@@ -322,7 +387,7 @@ int * MCMC::OperationSM(int * label, int *clusnum)
 
 			}
 			*clusnum = *clusnum -1;
-			cout << "!!!!!" << *clusnum << endl;
+			//cout << "!!!!!" << *clusnum << endl;
 		}
 	}
 
@@ -331,7 +396,6 @@ int * MCMC::OperationSM(int * label, int *clusnum)
 
 int * MCMC::OperationSDDSSM(int * label, int *clusnum)
 {
-	cout << "-----------" << *clusnum << endl;
 	int * labelCurrent = new int[_num];
 
 	for (int i=0;i<_num;i++)
@@ -351,55 +415,180 @@ int * MCMC::OperationSDDSSM(int * label, int *clusnum)
 		if (rand() % 2 == 0)
 		{
 			// Split
-			cout << "Split!" << endl;
+			//cout << "Split!" << endl;
 			int split_label = rand() % (*clusnum);
+			bool splited = false;
+			
 			for (int i=0;i<_num;i++)
 			{
 				if (labelCurrent[i] == split_label)
 				{
-					if (rand() % 2 == 0) labelCurrent[i] = (*clusnum);
-					else;
+					int labelOld = labelCurrent[i];
+					double likelihoodOld = 0.0;
+					if (splited)	likelihoodOld = Likelihood(labelCurrent, *clusnum+1);
+					else	likelihoodOld = Likelihood(labelCurrent, *clusnum);
+					labelCurrent[i] = (*clusnum);
+					double likelihoodCurrent = Likelihood(labelCurrent, (*clusnum) + 1);
+					
+					if (likelihoodOld < likelihoodCurrent)	labelCurrent[i] = labelOld; 
+					else splited = true;
+					
 				}
 			}
-			*clusnum = *clusnum + 1;
+			
+			if (splited)
+				*clusnum = *clusnum + 1;
 		}
 		else // Merge
 		{
-			cout << "Merge!" << endl;
+			//cout << "Merge!" << endl;
 			if (*clusnum == 1) return labelCurrent;
+			int mlabel = 0;
+			mlabel = rand() % *clusnum;
 			int mlabel1 = 0;
 			int mlabel2 = 0;
-			while(true)
-			{
-				// randomly pick one node
-				mlabel1 = rand() % *clusnum;
-				mlabel2 = rand() % *clusnum;
-				if (mlabel1 < mlabel2)
-				{
-					break;
-				}
-			}
 
-			for (int i=0;i<_num;i++)
-			{
-				if (labelCurrent[i] == mlabel2)
-				{
-					labelCurrent[i] = mlabel1;
-				}
-				if (labelCurrent[i] > mlabel2)
-				{
-					labelCurrent[i] --;
-				}
+			double likelihoodOld = std::numeric_limits<double>::max();
 
+			for (int i=0;i< (*clusnum);i++)
+			{
+				if (i != mlabel)
+				{
+					if (i<mlabel) 
+					{
+						mlabel1 = i; mlabel2 = mlabel;
+					}
+					else
+					{
+						mlabel1 = mlabel; mlabel2 = i;
+					}
+
+					int * labelUpdate = new int[_num];
+					for (int i=0;i<_num;i++)
+					{
+						labelUpdate[i] = label[i];
+					}
+
+					for (int i=0;i<_num;i++)
+					{
+						if (labelUpdate[i] == mlabel2)
+						{
+							labelUpdate[i] = mlabel1;
+						}
+						if (labelUpdate[i] > mlabel2)
+						{
+							labelUpdate[i] --;
+						}
+					}
+
+					double likelihoodCurrent = Likelihood(labelUpdate, (*clusnum) - 1);
+
+					if (likelihoodCurrent < likelihoodOld)
+					{
+						labelCurrent = labelUpdate;
+						likelihoodOld = likelihoodCurrent;
+					}
+
+				}
 			}
 			*clusnum = *clusnum -1;
-			cout << "!!!!!" << *clusnum << endl;
 		}
 	}
 
 	return labelCurrent;	
 }
 
+int * MCMC::OperationLSHSM(int * label, int *clusnum)
+{
+	int * labelCurrent = new int[_num];
+
+	for (int i=0;i<_num;i++)
+	{
+		labelCurrent[i] = label[i];
+	}
+
+	if (rand() % 2 == 0)
+	{
+		// If only has one cluster, then do nothing!
+		if (*clusnum == 1) return labelCurrent;
+		labelCurrent = Operation(label);
+		return labelCurrent;
+	}
+	else
+	{
+		if (rand() % 2 == 0)
+		{
+			// Split
+			//cout << "Split!" << endl;
+			int d1 = rand() % _num;
+			int * candidates = lsh->retrieve(l2lsh->getHash(Inverse(_data[d1], _dim), _dim));
+			int d2 = candidates[2];
+
+			if (labelCurrent[d1] == labelCurrent[d2])
+			{
+				int split_label = labelCurrent[d1];
+				for (int i=0;i<_num;i++)
+				{
+					if (labelCurrent[i] == split_label)
+					{
+						if (rand() % 2 == 0) labelCurrent[i] = (*clusnum);
+						else;
+					}
+				}
+				*clusnum = *clusnum + 1;
+			}
+		}
+		else // Merge
+		{
+			//cout << "Merge!" << endl;
+			if (*clusnum == 1) return labelCurrent;
+
+			int d1 = rand() % _num;
+			int * candidates = lsh->retrieve(l2lsh->getHash(_data[d1], _dim));
+			int d2 = candidates[2];
+			int mlabel1 = 0;
+			int mlabel2 = 0;
+			if (labelCurrent[d1] != labelCurrent[d2])
+			{
+				if (labelCurrent[d1] > labelCurrent[d2])
+				{
+					mlabel1 = labelCurrent[d2]; mlabel2 = labelCurrent[d1];
+				}
+				else
+				{
+					mlabel2 = labelCurrent[d2]; mlabel1 = labelCurrent[d1];
+				}
+				
+				for (int i=0;i<_num;i++)
+				{
+					if (labelCurrent[i] == mlabel2)
+					{
+						labelCurrent[i] = mlabel1;
+					}
+					if (labelCurrent[i] > mlabel2)
+					{
+						labelCurrent[i] --;
+					}
+
+				}
+				*clusnum = *clusnum -1;
+				//cout << "!!!!!" << *clusnum << endl;
+			}
+		}
+	}
+
+	return labelCurrent;
+}
+
+double * MCMC::Inverse (double * a, int dim)
+{
+	double * b = new double[dim];
+	for (int i=0;i<dim;i++)
+	{
+		b[i] = -a[i];
+	}
+	return b;
+}
 MCMC::~MCMC()
 {
 }
