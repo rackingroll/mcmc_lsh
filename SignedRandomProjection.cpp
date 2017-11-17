@@ -19,7 +19,7 @@ SignedRandomProjection::SignedRandomProjection(int dimention,int numOfHashes)
 	for (size_t i = 0; i < _dim; i++)
 	{
 		a[i] = i;
-	}
+	} 
 
 	srand(time(0));
 	_randBits = new short*[_numhashes];
