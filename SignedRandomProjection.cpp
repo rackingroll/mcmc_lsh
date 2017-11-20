@@ -7,7 +7,7 @@
 
 #define PI 3.14159265
 //#pragma once
-using namespace std;
+using namespace std;  
 
 SignedRandomProjection::SignedRandomProjection(int dimention,int numOfHashes)
 {
