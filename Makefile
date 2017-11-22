@@ -1,5 +1,5 @@
-SRCS = Bucket.cpp SignedRandomProjection.cpp LSH.cpp L2LSH.cpp MCMC.cpp
-HF = Bucket.h HashFunction.h SignedRandomProjection.h LSH.h L2LSH.h MCMC.h
+SRCS = Bucket.cpp SignedRandomProjection.cpp LSH.cpp L2LSH.cpp MCMC.cpp Gaussian.cpp
+HF = Bucket.h HashFunction.h SignedRandomProjection.h LSH.h L2LSH.h MCMC.h Gaussian.h
 ALL = clean experiment
 
 all: $(ALL)
