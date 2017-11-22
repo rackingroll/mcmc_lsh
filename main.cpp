@@ -84,7 +84,7 @@ int main (int argc, char *argv[])
         }
         cout << endl;
     }
-     
+       
     /*
     int* sample = lsh->sample(srp->getHash(data[2], 3)) ;
 
