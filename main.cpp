@@ -28,27 +28,17 @@ int main (int argc, char *argv[])
     int K = 10;
     int L = 10;
     int dim = 3;
-    int N = 8; // Datasize
+    int N = 100; // Datasize
     int clusnum = 2;
     
     double ** data = new double*[N];
     int * label = new int[N];
+
     for (int i=0;i<N;i++)
     {
         data[i] = new double[dim];
-        for (int j=0;j<dim;j++)
-        {
-            if (i< N/2)
-            {
-                label[i] = 0;
-                data[i][j] = 0.0;
-            }
-            else
-            {
-                label[i] = 1;
-                data[i][j] = 1.0;
-            }
-        }
+        Gaussian * gaussian = new Gaussian((double)(N % clusnum), 0.0, dim);
+        data[i] = gaussian->getData();
     }
     
     MCMC * mcmc = new MCMC(data, label, N, dim, clusnum, K, L);
