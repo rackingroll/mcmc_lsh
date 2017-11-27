@@ -8,6 +8,7 @@
 #include "SignedRandomProjection.h"
 //#include "L2LSH.h"
 #include "MCMC.h"
+#include "Gaussian.h"
 //#pragma once
 /* Author: Chen Luo
 *  COPYRIGHT PROTECTION
@@ -29,7 +30,7 @@ int main (int argc, char *argv[])
     int dim = 3;
     int N = 8; // Datasize
     int clusnum = 2;
- 
+    
     double ** data = new double*[N];
     int * label = new int[N];
     for (int i=0;i<N;i++)
