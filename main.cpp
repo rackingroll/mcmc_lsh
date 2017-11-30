@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 {
     // Generate a sample data here to do experiment.
     // With 0,1 one cluster, 3,4 one cluster
-
+ 
     int K = 10;
     int L = 10;
     int dim = 3;
