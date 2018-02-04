@@ -24,7 +24,7 @@ public:
     //MCMC();
     MCMC(double ** data, int * label, int num, int dim, int clusnum);
     MCMC(double ** data, int * label, int num, int dim, int clusnum, int K, int L);
-    int * EM_GMM();
+    int * EM_GMM(int clusnum);
     int * SM_GMM();
     int * SDDSSM_GMM();
     int * LSHSM_GMM();

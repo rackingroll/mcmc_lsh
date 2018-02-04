@@ -17,6 +17,8 @@ MCMC::MCMC()
 }
 */
 
+double THRESHOLD = 0.01;
+
 MCMC::MCMC(double ** data, int * label, int num, int dim, int clusnum)
 {
 	srand(time(0));
@@ -126,7 +128,7 @@ double MCMC::L2Distance(double *a, double *b)
 	return sqrt(l2);
 }
 
-int * MCMC::EM_GMM()
+int * MCMC::EM_GMM(int clusnum)
 {
 	int * label = new int[_num];
 
@@ -143,7 +145,7 @@ int * MCMC::EM_GMM()
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
 
-	while (likelihood >= 0.01)
+	while (likelihood >= THRESHOLD)
 	{
 		labelCurrent = Operation(label);
 		
@@ -158,7 +160,7 @@ int * MCMC::EM_GMM()
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 		}
-		//cout << "likelihood: " << likelihood << endl;
+		cout << "likelihood: " << likelihood << endl;
 		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
 
 	}
@@ -181,7 +183,7 @@ int * MCMC::SM_GMM()
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
 	int iter = 0;
-	while (likelihood >= 0.01)
+	while (likelihood >= THRESHOLD)
 	{
 		iter++;
 		int clusnumCurrent = clusnum;
@@ -220,15 +222,15 @@ int * MCMC::SDDSSM_GMM()
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
 	int iter = 0;
-	while (likelihood >= 0.01)
+	while (likelihood >= THRESHOLD)
 	{
 		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationSDDSSM(label, &clusnumCurrent);
-		//for (int i=0;i<_num;i++) cout << label[i] ;
-		//cout<< endl;
-		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		//cout<< endl;
+		for (int i=0;i<_num;i++) cout << label[i] ;
+		cout<< endl;
+		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
 		if (likelihoodCurrent < likelihood)
@@ -236,8 +238,9 @@ int * MCMC::SDDSSM_GMM()
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 			clusnum = clusnumCurrent;
+			//cout << "likelihood: " << likelihood << endl;
 		}
-		//cout << "likelihood: " << likelihood << endl;
+		cout << "likelihood: " << likelihood << endl;
 		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
 	}
 	
@@ -259,22 +262,24 @@ int * MCMC::LSHSM_GMM()
 	double likelihood = std::numeric_limits<double>::max();
 	int * labelCurrent;
 	int iter = 0;
-	while (likelihood >= 0.01)
+	while (likelihood >= THRESHOLD)
 	{
 		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationLSHSM(label, &clusnumCurrent);
-		//for (int i=0;i<_num;i++) cout << label[i] ;
-		//cout<< endl;
-		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		//cout<< endl;
+		for (int i=0;i<_num;i++) cout << label[i] ;
+		cout<< endl;
+		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
+		
 		if (likelihoodCurrent < likelihood)
 		{
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 			clusnum = clusnumCurrent;
+			cout << "likelihood: " << likelihood << endl;
 		}
 		//cout << "likelihood: " << likelihood << endl;
 		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;

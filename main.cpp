@@ -28,8 +28,8 @@ int main (int argc, char *argv[])
     int K = 10;
     int L = 10;
     int dim = 3;
-    int N = 100; // Datasize
-    int clusnum = 2;
+    int N = 10; // Datasize
+    int clusnum = 3;
     
     double ** data = new double*[N];
     int * label = new int[N];
@@ -37,21 +37,24 @@ int main (int argc, char *argv[])
     for (int i=0;i<N;i++)
     {
         data[i] = new double[dim];
-        Gaussian * gaussian = new Gaussian((double)(N % clusnum), 0.0, dim);
+        Gaussian * gaussian = new Gaussian((double)(i % clusnum), 0, dim);
         data[i] = gaussian->getData();
-    }
+        cout << data[i][0] << endl;
+     }
     
     MCMC * mcmc = new MCMC(data, label, N, dim, clusnum, K, L);
 
-    clock_t t;
-    t = clock();
+    clock_t t1, t2;
+    t1 = clock();
 
     //mcmc->EM_GMM();
     //mcmc->SM_GMM();
-    mcmc->SDDSSM_GMM();
-    //mcmc->LSHSM_GMM();
+    //mcmc->SDDSSM_GMM();
+    mcmc->LSHSM_GMM();
 
-    printf ("It took me %f seconds.\n",((float)t)/CLOCKS_PER_SEC);
+    t2 = clock();
+
+    printf ("It took me %f seconds.\n",((float)t2 - (float)t1)/CLOCKS_PER_SEC);
     return 0;
 
     LSH* lsh = new LSH(K,L);
