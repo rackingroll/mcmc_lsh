@@ -132,37 +132,39 @@ int * MCMC::EM_GMM(int clusnum)
 {
 	int * label = new int[_num];
 
+	// Randomly assign labels
 	for (int i = 0; i < _num; i++)
 	{
-		// Flip a coin, and randomly assign clusters
-		if (rand() % 2 == 0)
-			label[i] = 0;
-		else
-			label[i] = 1;
+		label[i] = rand() % clusnum;
 	}
 
-
 	double likelihood = std::numeric_limits<double>::max();
-	int * labelCurrent;
+	double plikelihood = 0.0;
 
-	while (likelihood >= THRESHOLD)
+	//for (int i=0;i<_num;i++) cout << label[i] ;
+	//cout<< endl;
+
+	while (true)
 	{
-		labelCurrent = Operation(label);
+
+		double ** centers = GetCenters(label, clusnum);
+
+		label = Reassignment(label, centers);
+		
 		
 		//for (int i=0;i<_num;i++) cout << label[i] ;
 		//cout<< endl;
 		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
 		//cout<< endl;
 
-		double likelihoodCurrent = Likelihood(labelCurrent, _clusnum);
-		if (likelihoodCurrent <= likelihood)
-		{
-			likelihood = likelihoodCurrent;
-			label = labelCurrent;
-		}
-		cout << "likelihood: " << likelihood << endl;
-		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+		likelihood = Likelihood(label, _clusnum);
+		
+		cout << "likelihoodCurrent" << likelihood << endl;
+		
+		if (abs(likelihood - plikelihood) <= THRESHOLD) break;
+		//if (likelihood <= THRESHOLD) break;
 
+		plikelihood = likelihood;
 	}
 
 	return label;
@@ -227,10 +229,10 @@ int * MCMC::SDDSSM_GMM()
 		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationSDDSSM(label, &clusnumCurrent);
-		for (int i=0;i<_num;i++) cout << label[i] ;
-		cout<< endl;
-		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		cout<< endl;
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
 		if (likelihoodCurrent < likelihood)
@@ -287,6 +289,28 @@ int * MCMC::LSHSM_GMM()
 	
 	cout<< iter <<endl;
 	return label;	
+}
+
+// Reassignment the labels to the corresponding centers
+int * MCMC::Reassignment(int * label, double ** centers)
+{
+	int * labelCurrent = new int[_num];
+	
+	for (int i=0;i<_num;i++)
+	{
+		double min_dis = std::numeric_limits<double>::max();
+		for (int j=0; j< _clusnum; j++)
+		{
+			double dist = L2Distance(_data[i], centers[j]) ;
+			if ( L2Distance(_data[i], centers[j]) < min_dis) 
+			{
+				min_dis = dist;
+				labelCurrent[i] = j;
+			}
+		}
+	}
+
+	return labelCurrent;
 }
 
 // Design two operations, move or switch

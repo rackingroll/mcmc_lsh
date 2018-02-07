@@ -19,6 +19,8 @@ private:
     int * OperationSM(int * label, int * clusnum);
     int * OperationSDDSSM(int * label, int * clusnum);
     int * OperationLSHSM(int * label, int * clusnum);
+    int * Reassignment(int * label, double ** centers);
+
     double * Inverse (double * a, int dim);
 public:
     //MCMC();
