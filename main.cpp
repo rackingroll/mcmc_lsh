@@ -28,8 +28,8 @@ int main (int argc, char *argv[])
     int K = 10;
     int L = 10;
     int dim = 3;
-    int N = 100000; // Datasize
-    int clusnum = 60;
+    int N = 100; // Datasize
+    int clusnum = 10;
     
     double ** data = new double*[N];
     int * label = new int[N];

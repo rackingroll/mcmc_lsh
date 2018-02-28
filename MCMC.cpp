@@ -269,22 +269,24 @@ int * MCMC::LSHSM_GMM()
 		iter++;
 		int clusnumCurrent = clusnum;
 		labelCurrent = OperationLSHSM(label, &clusnumCurrent);
-		for (int i=0;i<_num;i++) cout << label[i] ;
-		cout<< endl;
-		for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
-		cout<< endl;
+		//for (int i=0;i<_num;i++) cout << label[i] ;
+		//cout<< endl;
+		//for (int i=0;i<_num;i++) cout << labelCurrent[i] ;
+		//cout<< endl;
 	
 		double likelihoodCurrent = Likelihood(labelCurrent, clusnumCurrent);
-		
+		cout << "likelihood: " << likelihoodCurrent << endl;
 		if (likelihoodCurrent < likelihood)
 		{
 			likelihood = likelihoodCurrent;
 			label = labelCurrent;
 			clusnum = clusnumCurrent;
-			cout << "likelihood: " << likelihood << endl;
+			//cout << "likelihood: " << likelihood << endl;
 		}
 		//cout << "likelihood: " << likelihood << endl;
 		//cout << "likelihoodCurrent" << likelihoodCurrent << endl;
+		cout << iter << endl;
+
 	}
 	
 	cout<< iter <<endl;
