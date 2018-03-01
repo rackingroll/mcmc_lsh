@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
         data[i] = gaussian->getData();
         //cout << data[i][0] << endl;
      }
-    
+     
     MCMC * mcmc = new MCMC(data, label, N, dim, clusnum, K, L);
 
     clock_t t1, t2;

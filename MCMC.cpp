@@ -300,7 +300,7 @@ int * MCMC::Reassignment(int * label, double ** centers)
 	
 	for (int i=0;i<_num;i++)
 	{
-		double min_dis = std::numeric_limits<double>::max();
+		double min_dis = std::numeric_limits<double>::max(); 
 		for (int j=0; j< _clusnum; j++)
 		{
 			double dist = L2Distance(_data[i], centers[j]) ;
