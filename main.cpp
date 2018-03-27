@@ -42,11 +42,13 @@ int main (int argc, char *argv[])
         //cout << data[i][0] << endl;
      }
      
+
+    /*
     MCMC * mcmc = new MCMC(data, label, N, dim, clusnum, K, L);
 
     clock_t t1, t2;
     t1 = clock();
-
+ 
     //mcmc->EM_GMM(clusnum);
     //mcmc->SM_GMM();
     //mcmc->SDDSSM_GMM();
@@ -56,8 +58,10 @@ int main (int argc, char *argv[])
 
     printf ("It took me %f seconds.\n",((float)t2 - (float)t1)/CLOCKS_PER_SEC);
     return 0;
+    */
+    
 
-    /*
+    
     LSH* lsh = new LSH(K,L);
 
     L2LSH * l2lsh = new L2LSH(dim, K*L) ;
@@ -79,7 +83,7 @@ int main (int argc, char *argv[])
         }
         cout << endl;
     }
-    */
+    
     /*
     int* sample = lsh->sample(srp->getHash(data[2], 3)) ;
 
