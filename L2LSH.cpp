@@ -104,9 +104,9 @@ int * L2LSH::getHash(double * vector, int length)
         //printf("%f ", inner_product);
 
         hashes[i] = floor((inner_product+_b) / _w);    
-        //printf ("%d ", hashes[i]);
+        printf ("%d ", hashes[i]);
     }
-    //printf ("\n");
+    printf ("\n");
     return hashes;
 }
 

@@ -25,8 +25,8 @@ int main (int argc, char *argv[])
     // Generate a sample data here to do experiment.
     // With 0,1 one cluster, 3,4 one cluster
     
-    int K = 10;
-    int L = 10;
+    int K = 3;
+    int L = 1;
     int dim = 3;
     int N = 100; // Datasize
     int clusnum = 10;
@@ -60,8 +60,6 @@ int main (int argc, char *argv[])
     return 0;
     */
     
-
-    
     LSH* lsh = new LSH(K,L);
 
     L2LSH * l2lsh = new L2LSH(dim, K*L) ;
@@ -71,6 +69,7 @@ int main (int argc, char *argv[])
         lsh->add(l2lsh->getHash(data[j], dim), j);
     }
 
+    
     for (int i=0; i<N; i++ )
     {
         cout << "Data Number: " << i << endl;
